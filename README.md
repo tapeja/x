@@ -51,10 +51,9 @@ Valid constraint values are :
 - `square`
 
 	Creates a square image with the dimensions of the passed parameter.
-Shrinks the smaller dimension to match the parameter retaining the original
-aspect ratio then crops equally from the longer dimension to match the passed
-parameter. Image isn't resized if both dimensions are smaller than the passed
-parameter.
+First crops the larger dimension equally from both sides to match the smaller
+dimension then shrinks the square down to the passed parameter. Image isn't
+resized if both dimensions are smaller than the passed parameter.
 
 - `max`
 
