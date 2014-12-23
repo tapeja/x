@@ -1,30 +1,35 @@
 package main
 
 import (
-	"os",
+	"io"
 	"io/ioutil"
+	"os"
+
 	"gopkg.in/yaml.v2"
 )
 
+// Config contains the configuration options for the service
 type Config struct {
-
 }
 
-func NewConfig() {
+// NewConfig creates new configuration
+func NewConfig() *Config {
 	return &Config{}
 }
 
+// Load reads the configuration file from the provided file name
 func (c *Config) Load(fileName string) error {
 	f, err := os.Open(fileName)
 	if err != nil {
-		return
+		return err
 	}
 	defer f.Close()
-	c.LoadStream(f)
+	return c.LoadStream(f)
 }
 
+// LoadStream reads the configuration from the provided reader
 func (c *Config) LoadStream(r io.Reader) error {
-	data, err := ReadAll(r)
+	data, err := ioutil.ReadAll(r)
 	if err != nil {
 		return err
 	}
