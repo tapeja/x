@@ -18,16 +18,17 @@ func TestConfig(t *testing.T) {
     - max_width: 500
     - max: 1000
   formats:
-    - jpeg
+    - jpg
+    - png
   store:
     - local: /mnt/gallery`,
 			expected: &Config{
 				"android-tablets": Handler{
-					[]Sizes{
-						Sizes{Size(MaxWidth): 500},
-						Sizes{Size(Max): 1000},
+					[]SizePair{
+						SizePair{MaxWidth, 500},
+						SizePair{Max, 1000},
 					},
-					[]Format{Format("jpeg")},
+					[]Format{JPG, PNG},
 					[]Store{
 						{
 							"local": "/mnt/gallery",

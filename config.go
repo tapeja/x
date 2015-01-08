@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -8,12 +10,15 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type Sizes map[Size]int
+type SizePair struct {
+	Size  Size
+	Value int
+}
 
 type Store map[string]string
 
 type Handler struct {
-	Sizes   []Sizes
+	Sizes   []SizePair
 	Formats []Format
 	Store   []Store
 }
@@ -44,3 +49,36 @@ func (c *Config) LoadStream(r io.Reader) error {
 	}
 	return yaml.Unmarshal(data, c)
 }
+
+func (sp *SizePair) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var tmap map[string]int
+	if err := unmarshal(&tmap); err != nil {
+		return err
+	}
+	for k, v := range tmap {
+		switch Size(k) {
+		case Square, Max, MaxHeight, MaxWidth:
+			sp.Size = Size(k)
+			sp.Value = v
+		default:
+			return errors.New(fmt.Sprintf("Invalid size in config: %s", k))
+		}
+	}
+	return nil
+}
+
+// func (f *Format) UnmarshalYAML(unmarshal func(interface{}) error) error {
+// 	var fm string
+// 	if err := unmarshal(&fm); err != nil {
+// 		return err
+// 	}
+// 	format := Format(fm)
+// 	switch format {
+// 	case JPG, PNG, WebP:
+// 		print(format)
+// 		f = &format
+// 	default:
+// 		return errors.New(fmt.Sprintf("Invalid file format in config: %s", fm))
+// 	}
+// 	return nil
+// }
