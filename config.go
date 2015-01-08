@@ -3,30 +3,23 @@ package main
 import (
 	"io"
 	"io/ioutil"
-	"net/url"
 	"os"
 
 	"gopkg.in/yaml.v2"
 )
 
+type Sizes map[Size]int
+
+type Store map[string]string
+
 type Handler struct {
-	Sizes   map[Size]int
+	Sizes   []Sizes
 	Formats []Format
-	Stores  []url.URL
+	Store   []Store
 }
-
-type yamlHandler struct {
-	Sizes   map[string]int
-	Formats []string
-	Stores  []string
-}
-
-type yamlConfig map[string]yamlHandler
 
 // Config contains the configuration options for the service
-type Config struct {
-	Handlers map[string]Handler
-}
+type Config map[string]Handler
 
 // NewConfig creates new configuration
 func NewConfig() *Config {
@@ -46,12 +39,8 @@ func (c *Config) Load(fileName string) error {
 // LoadStream reads the configuration from the provided reader
 func (c *Config) LoadStream(r io.Reader) error {
 	data, err := ioutil.ReadAll(r)
-	var yc yamlConfig
 	if err != nil {
 		return err
 	}
-	if err := yaml.Unmarshal(data, &yc); err != nil {
-		return err
-	}
-	return nil
+	return yaml.Unmarshal(data, c)
 }
