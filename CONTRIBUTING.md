@@ -103,5 +103,7 @@ in truly exceptional situations, panic.
 
 #### Tests
 
+- Use [Go's native testing package](http://golang.org/pkg/testing/), only use a
+  testing framework if it becomes absolutely necessary.
 - Use [table driven tests](https://github.com/golang/go/wiki/TableDrivenTests)
   when appropriate, instead of writing separate unit tests.
