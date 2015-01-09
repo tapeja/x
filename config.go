@@ -1,4 +1,4 @@
-package main
+package x
 
 import (
 	"errors"
@@ -10,17 +10,14 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type SizePair struct {
-	Size  Size
-	Value int
-}
+// StoreConfig contains configuration values for the storage engine
+type StoreConfig map[string]string
 
-type Store map[string]string
-
+// Handler contains single handler configuration
 type Handler struct {
-	Sizes   []SizePair
+	Sizes   []Size
 	Formats []Format
-	Store   []Store
+	Store   []StoreConfig
 }
 
 // Config contains the configuration options for the service
@@ -50,22 +47,25 @@ func (c *Config) LoadStream(r io.Reader) error {
 	return yaml.Unmarshal(data, c)
 }
 
-func (sp *SizePair) UnmarshalYAML(unmarshal func(interface{}) error) error {
+// UnmarshalYAML unmarshals the Size confing and validates it
+func (s *Size) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var tmap map[string]int
 	if err := unmarshal(&tmap); err != nil {
 		return err
 	}
 	for k, v := range tmap {
-		switch Size(k) {
+		switch SizeType(k) {
 		case Square, Max, MaxHeight, MaxWidth:
-			sp.Size = Size(k)
-			sp.Value = v
+			s.Type = SizeType(k)
+			s.Value = v
 		default:
 			return errors.New(fmt.Sprintf("Invalid size in config: %s", k))
 		}
 	}
 	return nil
 }
+
+// https://github.com/go-yaml/yaml/issues/67
 
 // func (f *Format) UnmarshalYAML(unmarshal func(interface{}) error) error {
 // 	var fm string

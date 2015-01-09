@@ -1,4 +1,4 @@
-package main
+package x
 
 import (
 	"reflect"
@@ -24,12 +24,12 @@ func TestConfig(t *testing.T) {
     - local: /mnt/gallery`,
 			expected: &Config{
 				"android-tablets": Handler{
-					[]SizePair{
-						SizePair{MaxWidth, 500},
-						SizePair{Max, 1000},
+					[]Size{
+						Size{MaxWidth, 500},
+						Size{Max, 1000},
 					},
 					[]Format{JPG, PNG},
-					[]Store{
+					[]StoreConfig{
 						{
 							"local": "/mnt/gallery",
 						},
