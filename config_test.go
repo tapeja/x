@@ -46,7 +46,7 @@ func TestConfig(t *testing.T) {
 			t.Errorf("Expected %q, got %q for %q", tc.expected, c, tc.yaml)
 		}
 		if err != tc.err {
-			t.Errorf("Expected erro %q, got %q for %q", tc.err, err, tc.yaml)
+			t.Errorf("Expected error %q, got %q for %q", tc.err, err, tc.yaml)
 		}
 	}
 }
