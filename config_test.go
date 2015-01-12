@@ -43,6 +43,19 @@ func TestConfig(t *testing.T) {
 			expected: &Config{},
 			err:      "yaml: unmarshal errors:\n  line 1: cannot unmarshal !!int `123` into x.Handler",
 		},
+		{
+			yaml: `android-tablets:
+  sizes:
+    - max_bubble: 500
+    - max: 1000
+  formats:
+    - jpg
+    - png
+  store:
+    - local: /mnt/gallery`,
+			expected: &Config{},
+			err:      "Invalid size in config: max_bubble",
+		},
 	}
 	for _, tc := range testCases {
 		c := NewConfig()
