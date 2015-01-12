@@ -10,14 +10,14 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// StoreConfig contains configuration values for the storage engine
-type StoreConfig map[string]string
+// storeConfig contains configuration values for the storage engine
+type storeConfig map[string]string
 
 // Handler contains single handler configuration
 type Handler struct {
 	Sizes   []Size
 	Formats []Format
-	Store   []StoreConfig
+	Store   []storeConfig
 }
 
 // Config contains the configuration options for the service

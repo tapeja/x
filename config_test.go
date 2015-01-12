@@ -29,7 +29,7 @@ func TestConfig(t *testing.T) {
 						Size{Max, 1000},
 					},
 					[]Format{JPG, PNG},
-					[]StoreConfig{
+					[]storeConfig{
 						{
 							"local": "/mnt/gallery",
 						},
