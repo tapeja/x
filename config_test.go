@@ -10,7 +10,7 @@ func TestConfig(t *testing.T) {
 	var testCases = []struct {
 		yaml     string
 		expected *Config
-		err      error
+		err      string
 	}{
 		{
 			yaml: `android-tablets:
@@ -36,7 +36,12 @@ func TestConfig(t *testing.T) {
 					},
 				},
 			},
-			err: nil,
+			err: "",
+		},
+		{
+			yaml:     `asd: 123`,
+			expected: &Config{},
+			err:      "yaml: unmarshal errors:\n  line 1: cannot unmarshal !!int `123` into x.Handler",
 		},
 	}
 	for _, tc := range testCases {
@@ -45,8 +50,8 @@ func TestConfig(t *testing.T) {
 		if !reflect.DeepEqual(tc.expected, c) {
 			t.Errorf("Expected %q, got %q for %q", tc.expected, c, tc.yaml)
 		}
-		if err != tc.err {
-			t.Errorf("Expected error %q, got %q for %q", tc.err, err, tc.yaml)
+		if (err != nil) && (err.Error() != tc.err) {
+			t.Errorf("Expected error %q, got %q for %q", tc.err, err.Error(), tc.yaml)
 		}
 	}
 }
