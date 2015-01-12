@@ -1,7 +1,6 @@
 package x
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -44,7 +43,10 @@ func (c *Config) LoadStream(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	return yaml.Unmarshal(data, c)
+	if err := yaml.Unmarshal(data, c); err != nil {
+		return err
+	}
+	return c.validateFormats()
 }
 
 // UnmarshalYAML unmarshals the Size confing and validates it
@@ -59,12 +61,27 @@ func (s *Size) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			s.Type = SizeType(k)
 			s.Value = v
 		default:
-			return errors.New(fmt.Sprintf("Invalid size in config: %s", k))
+			return fmt.Errorf("Invalid size in config: %s", k)
 		}
 	}
 	return nil
 }
 
+func (c *Config) validateFormats() error {
+	for _, h := range *c {
+		for _, format := range h.Formats {
+			switch format {
+			case JPG, PNG, WebP:
+				continue
+			default:
+				return fmt.Errorf("Invalid file format in config: %s", format)
+			}
+		}
+	}
+	return nil
+}
+
+// NOTE go-yaml doesn't pass back the value for non-structs:
 // https://github.com/go-yaml/yaml/issues/67
 
 // func (f *Format) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -78,7 +95,7 @@ func (s *Size) UnmarshalYAML(unmarshal func(interface{}) error) error {
 // 		print(format)
 // 		f = &format
 // 	default:
-// 		return errors.New(fmt.Sprintf("Invalid file format in config: %s", fm))
+// 		return fmt.Errorf("Invalid file format in config: %s", fm)
 // 	}
 // 	return nil
 // }

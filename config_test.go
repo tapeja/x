@@ -56,15 +56,28 @@ func TestConfig(t *testing.T) {
 			expected: &Config{},
 			err:      "Invalid size in config: max_bubble",
 		},
+		{
+			yaml: `android-tablets:
+  sizes:
+    - max: 1000
+  formats:
+    - gif
+    - png
+  store:
+    - local: /mnt/gallery`,
+			expected: &Config{},
+			err:      "Invalid file format in config: gif",
+		},
 	}
 	for _, tc := range testCases {
 		c := NewConfig()
 		err := c.LoadStream(strings.NewReader(tc.yaml))
-		if !reflect.DeepEqual(tc.expected, c) {
+		if err != nil {
+			if err.Error() != tc.err {
+				t.Errorf("Expected error %q, got %q for %q", tc.err, err.Error(), tc.yaml)
+			}
+		} else if !reflect.DeepEqual(tc.expected, c) {
 			t.Errorf("Expected %q, got %q for %q", tc.expected, c, tc.yaml)
-		}
-		if (err != nil) && (err.Error() != tc.err) {
-			t.Errorf("Expected error %q, got %q for %q", tc.err, err.Error(), tc.yaml)
 		}
 	}
 }
