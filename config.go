@@ -43,10 +43,7 @@ func (c *Config) LoadStream(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	if err := yaml.Unmarshal(data, c); err != nil {
-		return err
-	}
-	return c.validateFormats()
+	return yaml.Unmarshal(data, c)
 }
 
 // UnmarshalYAML unmarshals the Size confing and validates it
@@ -81,21 +78,18 @@ func (c *Config) validateFormats() error {
 	return nil
 }
 
-// NOTE go-yaml doesn't pass back the value for non-structs:
-// https://github.com/go-yaml/yaml/issues/67
-
-// func (f *Format) UnmarshalYAML(unmarshal func(interface{}) error) error {
-// 	var fm string
-// 	if err := unmarshal(&fm); err != nil {
-// 		return err
-// 	}
-// 	format := Format(fm)
-// 	switch format {
-// 	case JPG, PNG, WebP:
-// 		print(format)
-// 		f = &format
-// 	default:
-// 		return fmt.Errorf("Invalid file format in config: %s", fm)
-// 	}
-// 	return nil
-// }
+func (f *Format) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var fm string
+	if err := unmarshal(&fm); err != nil {
+		return err
+	}
+	format := Format(fm)
+	switch format {
+	case JPG, PNG, WebP:
+		print(format)
+		*f = format
+	default:
+		return fmt.Errorf("Invalid file format in config: %s", fm)
+	}
+	return nil
+}
