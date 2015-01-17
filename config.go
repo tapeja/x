@@ -64,20 +64,7 @@ func (s *Size) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return nil
 }
 
-func (c *Config) validateFormats() error {
-	for _, h := range *c {
-		for _, format := range h.Formats {
-			switch format {
-			case JPG, PNG, WebP:
-				continue
-			default:
-				return fmt.Errorf("Invalid file format in config: %s", format)
-			}
-		}
-	}
-	return nil
-}
-
+// UnmarshalYAML unmarshals the Format confing and validates it
 func (f *Format) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var fm string
 	if err := unmarshal(&fm); err != nil {
