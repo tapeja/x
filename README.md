@@ -1,5 +1,7 @@
 # X
 
+[![Join the chat at https://gitter.im/tapeja/x](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/tapeja/x?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 **WARNING: This is a work in progress!**
 
 X is an image processing service written in Go. It is designed to be easy to
